@@ -1,6 +1,11 @@
 export module EE.Math.Vector;
 
-#include <cmath>;
+#ifdef _WIN32
+import <cmath>;
+import <algorithm>;
+#else
+#include <cmath>
+#endif
 
 export namespace EE {
     struct Vector3 {
