@@ -1,6 +1,7 @@
 import EE.Math.Vector;
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
+#include <catch2/catch_approx.hpp>
 #include <cmath>
 
 using namespace Catch::Matchers;
@@ -21,9 +22,9 @@ TEST_CASE("Vector3 - Constructor with one value") {
 
 TEST_CASE("Vector3 - Constructor with three values") {
     EE::Vector3 v(1.0f, 2.0f, 3.0f);
-    CHECK(v.x == 1.0f);
-    CHECK(v.y == 2.0f);
-    CHECK(v.z == 3.0f);
+    REQUIRE(v.x == 1.0f);
+    REQUIRE(v.y == 2.0f);
+    REQUIRE(v.z == 3.0f);
 }
 
 TEST_CASE("Vector3 - Addition Operator") {
@@ -105,7 +106,7 @@ TEST_CASE("Vector3 - length") {
 TEST_CASE("Vector3 - dot") {
     EE::Vector3 a(1, 2, 3);
     EE::Vector3 b(4, 5, 6);
-    CHECK(a.dot(b) == 32.0f);
+    REQUIRE(a.dot(b) == 32.0f);
 }
 
 TEST_CASE("Vector3 - cross") {
@@ -205,4 +206,153 @@ TEST_CASE("Vector3 - reflect") {
     REQUIRE(reflected.x == 1.0f);
     REQUIRE(reflected.y == 1.0f);
     REQUIRE(reflected.z == 0.0f);
+}
+
+//
+// Vector2 tests.
+//
+
+TEST_CASE("Vector2 - Constructors", "[vector2]") {
+    EE::Vector2 v1;
+    REQUIRE(v1.x == 0.0f);
+    REQUIRE(v1.y == 0.0f);
+
+    EE::Vector2 v2(5.0f);
+    REQUIRE(v2.x == 5.0f);
+    REQUIRE(v2.y == 5.0f);
+
+    EE::Vector2 v3(1, 2);
+    REQUIRE(v3.x == 1.0f);
+    REQUIRE(v3.y == 2.0f);
+}
+
+TEST_CASE("Vector2 - Operations", "[vector2]") {
+    EE::Vector2 a(1, 2);
+    EE::Vector2 b(3, 4);
+
+    auto c = a + b;
+    REQUIRE(c.x == 4.0f);
+    REQUIRE(c.y == 6.0f);
+
+    auto d = a - b;
+    REQUIRE(d.x == -2.0f);
+    REQUIRE(d.y == -2.0f);
+
+    auto e = a * b;
+    REQUIRE(e.x == 3.0f);
+    REQUIRE(e.y == 8.0f);
+
+    auto f = a / b;
+    REQUIRE(f.x == Catch::Approx(1.0f / 3.0f));
+    REQUIRE(f.y == Catch::Approx(2.0f / 4.0f));
+}
+
+TEST_CASE("Vector2 - Scalar operations", "[vector2]") {
+    EE::Vector2 a(1, 2);
+
+    auto b = a * 2.0f;
+    REQUIRE(b.x == 2.0f);
+    REQUIRE(b.y == 4.0f);
+
+    auto c = 3.0f * a;
+    REQUIRE(c.x == 3.0f);
+    REQUIRE(c.y == 6.0f);
+
+    auto d = a / 2.0f;
+    REQUIRE(d.x == 0.5f);
+    REQUIRE(d.y == 1.0f);
+
+    auto e = -a;
+    REQUIRE(e.x == -1.0f);
+    REQUIRE(e.y == -2.0f);
+}
+
+TEST_CASE("Vector2 - Comparison", "[vector2]") {
+    EE::Vector2 a(1, 2);
+    EE::Vector2 b(1, 2);
+    EE::Vector2 c(3, 4);
+
+    REQUIRE(a == b);
+    REQUIRE(a != c);
+}
+
+TEST_CASE("Vector2 - Length", "[vector2]") {
+    EE::Vector2 a(3, 4);
+    REQUIRE(a.lengthSquared() == 25.0f);
+    REQUIRE(a.length() == Catch::Approx(5.0f));
+}
+
+TEST_CASE("Vector2 - dot", "[vector2]") {
+    EE::Vector2 a(1, 2);
+    EE::Vector2 b(3, 4);
+    REQUIRE(a.dot(b) == 11.0f);
+}
+
+TEST_CASE("Vector2 - Cross (scalar)", "[vector2]") {
+    EE::Vector2 a(1, 0);
+    EE::Vector2 b(0, 1);
+    REQUIRE(a.cross(b) == 1.0f);
+
+    EE::Vector2 c(1, 2);
+    EE::Vector2 d(3, 4);
+    REQUIRE(c.cross(d) == -2.0f);
+}
+
+TEST_CASE("Vector2 - normalize", "[vector2]") {
+    EE::Vector2 a(3, 4);
+    auto n = a.normalized();
+    REQUIRE(n.x == Catch::Approx(0.6f));
+    REQUIRE(n.y == Catch::Approx(0.8f));
+    REQUIRE(n.length() == Catch::Approx(1.0f));
+}
+
+TEST_CASE("Vector2 - Distance", "[vector2]") {
+    EE::Vector2 a(0, 0);
+    EE::Vector2 b(3, 4);
+    REQUIRE(a.distance(b) == Catch::Approx(5.0f));
+    REQUIRE(a.distanceSquared(b) == 25.0f);
+}
+
+TEST_CASE("Vector2 - Lerp", "[vector2]") {
+    EE::Vector2 a(0, 0);
+    EE::Vector2 b(10, 10);
+    auto mid = a.lerp(b, 0.5f);
+    REQUIRE(mid.x == 5.0f);
+    REQUIRE(mid.y == 5.0f);
+}
+
+TEST_CASE("Vector2 - Min/Max", "[vector2]") {
+    EE::Vector2 a(1, 5);
+    EE::Vector2 b(4, 2);
+
+    auto mn = a.min(b);
+    REQUIRE(mn.x == 1.0f);
+    REQUIRE(mn.y == 2.0f);
+
+    auto mx = a.max(b);
+    REQUIRE(mx.x == 4.0f);
+    REQUIRE(mx.y == 5.0f);
+}
+
+TEST_CASE("Vector2 - Abs", "[vector2]") {
+    EE::Vector2 a(-1, -2);
+    auto b = a.abs();
+    REQUIRE(b.x == 1.0f);
+    REQUIRE(b.y == 2.0f);
+}
+
+TEST_CASE("Vector2 - Reflect", "[vector2]") {
+    EE::Vector2 a(1, -1);
+    EE::Vector2 normal(0, 1);
+    auto reflected = a.reflect(normal);
+    REQUIRE(reflected.x == 1.0f);
+    REQUIRE(reflected.y == 1.0f);
+}
+
+TEST_CASE("Vector2 - ProjectOn", "[vector2]") {
+    EE::Vector2 a(1, 1);
+    EE::Vector2 b(2, 0);
+    auto proj = a.projectOn(b);
+    REQUIRE(proj.x == 1.0f);
+    REQUIRE(proj.y == 0.0f);
 }
