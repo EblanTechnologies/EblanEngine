@@ -2,6 +2,7 @@
 .xmake/
 build/
 cmake-build-*/
+.cache/
 
 # MacOS Cache
 .DS_Store
