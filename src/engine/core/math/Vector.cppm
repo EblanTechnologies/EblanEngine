@@ -1,8 +1,6 @@
 export module EE.Math.Vector;
 
-import <cmath>;
-import <algorithm>;
-import <iostream>;
+#include <cmath>;
 
 export namespace EE {
     struct Vector3 {
@@ -35,10 +33,6 @@ export namespace EE {
         Vector3 operator/(float scalar) const { return {x/scalar, y/scalar, z/scalar}; }
 
         Vector3 operator-() const { return {-x, -y, -z}; }
-
-        friend std::ostream& operator<<(std::ostream& os, const Vector3& v) {
-            return os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
-        }
 
         float lengthSquared() const { return x*x + y*y + z*z; }
         float distanceSquared(const Vector3& other) const { return (*this - other).lengthSquared(); }
