@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential libgl1-mesa-dev libglu1-mesa-dev
+          sudo apt-get install -y clang-17 libgl1-mesa-dev libglu1-mesa-dev
 
       - name: Setup xmake
         uses: xmake-io/github-action-setup-xmake@v1
