@@ -1,0 +1,19 @@
+# Xmake cache
+.xmake/
+build/
+cmake-build-*/
+
+# MacOS Cache
+.DS_Store
+
+
+.vscode/
+.idea/
+
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+compile_commands.json
