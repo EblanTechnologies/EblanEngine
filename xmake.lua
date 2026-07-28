@@ -2,7 +2,6 @@ add_rules("mode.debug", "mode.release")
 set_languages("cxx20")
 
 if is_plat("linux") then
-    -- Используем Clang на Linux
     set_toolchains("clang", {cc = "clang-18", cxx = "clang++-18"})
 end
 
