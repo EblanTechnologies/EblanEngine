@@ -1,0 +1,11 @@
+CompileFlags:
+  Add:
+    - "-std=c++20"
+
+If:
+  PathMatch: .*
+CompileFlags:
+  Remove:
+    - "/headerUnit*"
+    - "/reference*"
+    - "/ifcOutput*"

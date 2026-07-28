@@ -4,8 +4,11 @@
 
 import EE.Math.Quaternion;
 import EE.Math.Vector;
+import EE.Math.Literals;
+import EE.Math.Angle;
 
 using namespace Catch::Matchers;
+using namespace EE::Literals;
 
 TEST_CASE("Quaternion - Constructors", "[quaternion]") {
     EE::Quaternion q1;
@@ -42,7 +45,7 @@ TEST_CASE("Quaternion - FromAxisAngle", "[quaternion]") {
 }
 
 TEST_CASE("Quaternion - FromEuler", "[quaternion]") {
-    auto q = EE::Quaternion::fromEuler(0, 0, 3.141592f / 2.0f);
+    auto q = EE::Quaternion::fromEuler(0_rad, 0_rad, EE::Angle::fromRadians(3.141592f / 2.0f));
 
     REQUIRE(q.x == Catch::Approx(0.0f));
     REQUIRE(q.y == Catch::Approx(0.0f));

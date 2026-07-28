@@ -1,6 +1,4 @@
-export module EE.Math.Quaternion;
-
-import EE.Math.Vector;
+module;
 
 #ifdef _WIN32
 import <cmath>;
@@ -8,6 +6,11 @@ import <algorithm>;
 #else
 #include <cmath>
 #endif
+
+export module EE.Math.Quaternion;
+
+import EE.Math.Vector;
+import EE.Math.Angle;
 
 export namespace EE {
     struct Quaternion {
@@ -26,10 +29,10 @@ export namespace EE {
             return {norm.x * s, norm.y * s, norm.z * s, std::cos(halfAngle)};
         }
 
-        static Quaternion fromEuler(float pitch, float yaw, float roll) {
-            float halfPitch = pitch * 0.5f;
-            float halfYaw = yaw * 0.5f;
-            float halfRoll = roll * 0.5f;
+        static Quaternion fromEuler(Angle pitch, Angle yaw, Angle roll) {
+            float halfPitch = pitch.radians() * 0.5f;
+            float halfYaw = yaw.radians() * 0.5f;
+            float halfRoll = roll.radians() * 0.5f;
 
             float sp = std::sin(halfPitch);
             float cp = std::cos(halfPitch);
@@ -46,8 +49,20 @@ export namespace EE {
             return q;
         }
 
-        static Quaternion fromEuler(const Vector3& euler) {
-            return fromEuler(euler.x, euler.y, euler.z);
+        static Quaternion fromEulerRadians(const Vector3& euler) {
+            return fromEuler(
+                Angle::fromRadians(euler.x),
+                Angle::fromRadians(euler.y),
+                Angle::fromRadians(euler.z)
+            );
+        }
+
+        static Quaternion fromEulerDegrees(const Vector3& euler) {
+            return fromEuler(
+                Angle::fromDegrees(euler.x),
+                Angle::fromDegrees(euler.y),
+                Angle::fromDegrees(euler.z)
+            );
         }
 
         Quaternion operator*(const Quaternion& other) const {

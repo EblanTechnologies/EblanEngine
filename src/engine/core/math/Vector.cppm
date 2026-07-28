@@ -1,4 +1,4 @@
-export module EE.Math.Vector;
+module;
 
 #ifdef _WIN32
 import <cmath>;
@@ -6,6 +6,8 @@ import <algorithm>;
 #else
 #include <cmath>
 #endif
+
+export module EE.Math.Vector;
 
 export namespace EE {
     struct Vector3 {
@@ -123,5 +125,37 @@ export namespace EE {
             std::max(y, other.y),
         }; }
         Vector2 abs() const { return {std::abs(x), std::abs(y)}; }
+    };
+
+    struct Vector4 {
+        float x = 0.0f, y = 0.0f, z = 0.0f, w = 0.0f;
+
+        Vector4() = default;
+        Vector4(float v) : Vector4(v, v, v, v) {}
+        Vector4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+
+        Vector4 operator+(const Vector4& other) const { return {x+other.x, y+other.y, z+other.z, w+other.w}; }
+        Vector4 operator-(const Vector4& other) const { return {x-other.x, y-other.y, z-other.z, w-other.w}; }
+        Vector4 operator*(const Vector4& other) const { return {x*other.x, y*other.y, z*other.z, w*other.w}; }
+        Vector4 operator/(const Vector4& other) const { return {x/other.x, y/other.y, z/other.z, w/other.w}; }
+
+        bool operator==(const Vector4& other) const { return x == other.x && y == other.y && z == other.z && w == other.w; }
+        bool operator!=(const Vector4& other) const { return !(*this == other); }
+
+        Vector4 operator-() const { return {-x, -y, -z, -w}; }
+
+        Vector4 operator*(float scalar) const { return {x*scalar, y*scalar, z*scalar, w*scalar}; }
+        friend Vector4 operator*(float scalar, const Vector4& v) { return v * scalar; }
+        Vector4 operator/(float scalar) const { return {x/scalar, y/scalar, z/scalar, w/scalar}; }
+
+        float lengthSquared() const { return x*x + y*y + z*z + w*w; }
+        float length() const { return std::sqrt(lengthSquared()); }
+        float dot(const Vector4& other) const { return x*other.x + y*other.y + z*other.z + w*other.w; }
+
+        Vector4 normalized() const { float l = length(); return l > 0 ? *this * (1.0f/l) : Vector4(0); }
+
+        Vector3 xyz() const { return {x, y, z}; }
+
+        Vector3 position() const { return {x / w, y / w, z / w}; }
     };
 }
