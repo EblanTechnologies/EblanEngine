@@ -11,12 +11,12 @@ namespace EE {
         m[0][0] = m[1][1] = m[2][2] = m[3][3] = 1.0f;
     }
 
-    Matrix4::Matrix4(float diagonal) {
+    Matrix4::Matrix4(const float diagonal) {
         memset(m, 0, sizeof(m));
         m[0][0] = m[1][1] = m[2][2] = m[3][3] = diagonal;
     }
 
-    Matrix4::Matrix4(float a, float b, float c, float d) {
+    Matrix4::Matrix4(const float a, const float b, const float c, const float d) {
         memset(m, 0, sizeof(m));
         m[0][0] = a;
         m[1][1] = b;
@@ -29,7 +29,7 @@ namespace EE {
     }
 
     Matrix4 Matrix4::identity() {
-        return {1.0f};
+        return Matrix4(1.0);
     }
 
     Matrix4 Matrix4::translation(const Vector3& translation) {
@@ -256,7 +256,7 @@ namespace EE {
         return result;
     }
 
-    Matrix4 Matrix4::trs(const Vector3& pos, const Quaternion& rot, const Vector3& scale) const {
+    Matrix4 Matrix4::trs(const Vector3& pos, const Quaternion& rot, const Vector3& scale) {
         const Matrix4 trans = translation(pos);
         const Matrix4 rotMat = rotation(rot);
         const Matrix4 scaleMat = scaling(scale);
