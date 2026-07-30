@@ -2,6 +2,10 @@ module;
 
 #include <cassert>
 
+#ifdef __linux__
+#include <cstddef>
+#endif
+
 export module EE.Core.Entity;
 
 import std;

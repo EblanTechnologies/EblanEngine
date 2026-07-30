@@ -3,6 +3,10 @@ module;
 #include <cfloat>
 #include <vector>
 
+#ifdef __linux__
+#include <typeinfo>
+#endif
+
 export module EE.Core.Reflection;
 
 export namespace EE {

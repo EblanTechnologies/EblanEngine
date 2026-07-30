@@ -1,7 +1,8 @@
-import EE.Math.Vector;
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <catch2/catch_approx.hpp>
+
+import EE.Math.Vector;
 
 using namespace Catch::Matchers;
 

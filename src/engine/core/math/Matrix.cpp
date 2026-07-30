@@ -5,7 +5,6 @@ module;
 
 module EE.Math.Matrix;
 
-import EE.Math.Matrix;
 import EE.Math.Vector;
 import EE.Math.Quaternion;
 import EE.Math;

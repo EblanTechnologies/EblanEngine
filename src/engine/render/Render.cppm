@@ -39,7 +39,7 @@ export namespace EE::Render {
     struct PipelineHandle  { uint32_t id = 0; };
     struct BufferHandle    { uint32_t id = 0; };
 
-    export struct DrawCall {
+    struct DrawCall {
         Matrix4 world = EE::Matrix4::identity();
         MeshHandle mesh;
         MaterialHandle material;
@@ -47,13 +47,13 @@ export namespace EE::Render {
         uint32_t layerMask = 0xFFFFFFFF;
     };
 
-    export struct RenderScene {
+    struct RenderScene {
         std::vector<DrawCall> opaque;
         std::vector<DrawCall> transparent;
         std::vector<DrawCall> shadowCasters;
     };
 
-    export class IDevice {
+    class IDevice {
     public:
         virtual ~IDevice() = default;
 
@@ -69,7 +69,7 @@ export namespace EE::Render {
         virtual void setViewport(int width, int height) = 0;
     };
 
-    export std::unique_ptr<IDevice> createOpenGLDevice(GLFWwindow* window);
+    std::unique_ptr<IDevice> createOpenGLDevice(GLFWwindow* window);
 }
 
 

@@ -1,5 +1,11 @@
 module;
 
+#ifdef __linux__
+#define OFFSET_OF(type, member) __builtin_offsetof(type, member)
+#else
+#define OFFSET_OF(type, member) offsetof(type, member)
+#endif
+
 #include <cmath>
 #include "../ReflectionMacro.hpp"
 
@@ -184,8 +190,8 @@ export namespace EE {
 
 REFLECT_COMPONENT(EE::Vector3, {
     t.fields = {
-        {"x", offsetof(EE::Vector3, x), nullptr},
-        {"y", offsetof(EE::Vector3, y), nullptr},
-        {"z", offsetof(EE::Vector3, z), nullptr}
+        {"x", OFFSET_OF(EE::Vector3, x), nullptr},
+        {"y", OFFSET_OF(EE::Vector3, y), nullptr},
+        {"z", OFFSET_OF(EE::Vector3, z), nullptr}
     };
 })
