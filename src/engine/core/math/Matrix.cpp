@@ -1,9 +1,14 @@
+module;
+
 #include <cmath>
 #include <cstring>
+
+module EE.Math.Matrix;
 
 import EE.Math.Matrix;
 import EE.Math.Vector;
 import EE.Math.Quaternion;
+import EE.Math;
 
 namespace EE {
     Matrix4::Matrix4() {
@@ -42,7 +47,8 @@ namespace EE {
         return result;
     }
 
-    Matrix4 Matrix4::rotation(const Quaternion &q) {
+    Matrix4 Matrix4::rotation(const Quaternion &qUn) {
+        Quaternion q = qUn.normalized();
         Matrix4 result;
 
         const float x2 = q.x + q.x, y2 = q.y + q.y, z2 = q.z + q.z, w2 = q.w;
@@ -82,17 +88,18 @@ namespace EE {
         return result;
     }
 
-    Matrix4 Matrix4::perspective(const float fov, const float aspect, const float near, const float far) {
-        Matrix4 result;
+    Matrix4 Matrix4::perspective(const int fovDeg, const float aspect, const float near, const float far) {
+        Matrix4 result(0.0f);
 
-        const float tanHalfFov = std::tan(fov * 0.5f);
+        const float fowRad = EEStd::deg2Rad(static_cast<float>(fovDeg));
+        const float tanHalfFov = std::tan(fowRad * 0.5f);
         const float zRange = near - far;
 
         result.m[0][0] = 1.0f / (aspect * tanHalfFov);
         result.m[1][1] = 1.0f / tanHalfFov;
         result.m[2][2] = (far + near) / zRange;
-        result.m[2][3] = -1.0f;
-        result.m[3][2] = (2.0f * far * near) / zRange;
+        result.m[2][3] = (2.0f * far * near) / zRange;
+        result.m[3][2] = -1.0f;
         result.m[3][3] = 0.0f;
 
         return result;

@@ -1,14 +1,12 @@
 module;
 
-#include <cmath>
-#include "../ReflectionMacro.hpp"
+#include <cstddef>
 
-#ifdef _WIN32
-#include <algorithm>
-#endif
+#include "../ReflectionMacro.hpp"
 
 export module EE.Math.Quaternion;
 
+import std;
 import EE.Math.Vector;
 import EE.Math.Angle;
 import EE.Core.Reflection;

@@ -43,6 +43,26 @@ export namespace EE {
         friend Vector3 operator/(const float scalar, const Vector3& v) { return v / scalar; }
         Vector3 operator-() const { return {-x, -y, -z}; }
 
+        float& operator[](const size_t i) { return (&x)[i]; }
+        const float& operator[](const size_t i) const { return (&x)[i]; }
+
+        [[nodiscard]] Vector3 updateX(const float newX) const { return {newX, y, z}; }
+        [[nodiscard]] Vector3 updateY(const float newY) const { return {x, newY, z}; }
+        [[nodiscard]] Vector3 updateZ(const float newZ) const { return {x, y, newZ}; }
+        [[nodiscard]] Vector3 addToX(const float value) const { return {x + value, y, z}; }
+        [[nodiscard]] Vector3 addToY(const float value) const { return {x, y + value, z}; }
+        [[nodiscard]] Vector3 addToZ(const float value) const { return {x, y, z + value}; }
+        [[nodiscard]] Vector3 minusFromX(const float value) const { return {x - value, y, z}; }
+        [[nodiscard]] Vector3 minusFromY(const float value) const { return {x, y - value, z}; }
+        [[nodiscard]] Vector3 minusFromZ(const float value) const { return {x, y, z - value}; }
+        [[nodiscard]] Vector3 multiplyX(const float value) const { return {x * value, y, z}; }
+        [[nodiscard]] Vector3 multiplyY(const float value) const { return {x, y * value, z}; }
+        [[nodiscard]] Vector3 multiplyZ(const float value) const { return {x, y, z * value}; }
+        [[nodiscard]] Vector3 divideX(const float value) const { return {x / value, y, z}; }
+        [[nodiscard]] Vector3 divideY(const float value) const { return {x, y / value, z}; }
+        [[nodiscard]] Vector3 divideZ(const float value) const { return {x, y, z / value}; }
+
+
         [[nodiscard]] float lengthSquared() const { return x*x + y*y + z*z; }
         [[nodiscard]]float distanceSquared(const Vector3& other) const { return (*this - other).lengthSquared(); }
         [[nodiscard]] float length() const { return std::sqrt(lengthSquared()); }

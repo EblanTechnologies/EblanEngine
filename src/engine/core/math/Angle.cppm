@@ -1,8 +1,8 @@
 module;
 
-#include <numbers>
-
 export module EE.Math.Angle;
+
+import std;
 
 export namespace EE {
     struct Angle {

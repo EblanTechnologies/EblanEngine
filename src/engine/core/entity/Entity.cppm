@@ -1,22 +1,25 @@
 module;
 
-#include <cstdint>;
-#include <vector>;
-#include <unordered_map>;
-#include <cassert>;
+#include <cassert>
 
-export module EE.Entity;
+export module EE.Core.Entity;
 
+import std;
 import EE.Math.Vector;
 
+using std::uint64_t;
+using std::uint32_t;
+
 export namespace EE {
+    constexpr uint32_t INVALID_INDEX = std::numeric_limits<uint32_t>::max();
+
     using EntityId = uint64_t;
     constexpr EntityId NULL_ENTITY = 0;
 
     constexpr EntityId MakeEntityId(const uint32_t index, const uint32_t generation) {
         return (static_cast<EntityId>(generation) << 32) | index;
     }
-    constexpr uint32_t EntityIndex(const EntityId id) { return static_cast<uint32_t>(id); }
+    constexpr  uint32_t EntityIndex(const EntityId id) { return static_cast<uint32_t>(id); }
     constexpr uint32_t EntityGeneration(const EntityId id) { return static_cast<uint32_t>(id >> 32); }
 
     struct IComponentArray {
@@ -35,21 +38,21 @@ export namespace EE {
         std::vector<EntityId> entity;
 
         void resizeSparce(const uint32_t newSize) {
-            if (sparce.size() <= newSize) sparce.resize(newSize + 1, UINT32_MAX);
+            if (sparce.size() <= newSize) sparce.resize(newSize + 1, INVALID_INDEX);
         }
 
         void add(const EntityId id, T&& component) {
             const uint32_t index = EntityIndex(id);
             resizeSparce(index);
-            assert(sparce[index] == UINT32_MAX && "Component already exists");
+            assert(sparce[index] == INVALID_INDEX && "Component already exists");
             sparce[index] = static_cast<uint32_t>(dense.size());
             dense.push_back(std::move(component));
             entity.push_back(id);
         }
 
-        void remove(EntityId entityId) override {
+        void remove(const EntityId entityId) override {
             const uint32_t index = EntityIndex(entityId);
-            if (index >= sparce.size() || sparce[index] == UINT32_MAX) return;
+            if (index >= sparce.size() || sparce[index] == INVALID_INDEX) return;
             uint32_t denseIndex = sparce[index];
             uint32_t lastIndex = static_cast<uint32_t>(dense.size()) - 1;
             const EntityId lastEntity = entity[lastIndex];
@@ -60,19 +63,25 @@ export namespace EE {
 
             dense.pop_back();
             entity.pop_back();
-            sparce[index] = UINT32_MAX;
+            sparce[index] = INVALID_INDEX;
         }
 
         [[nodiscard]] bool has(const EntityId entityId) const override {
             const uint32_t index = EntityIndex(entityId);
-            return index < sparce.size() && sparce[index] != UINT32_MAX;
+            return index < sparce.size() && sparce[index] != INVALID_INDEX;
         }
 
         [[nodiscard]] size_t size() const override { return dense.size(); }
 
         T* get(EntityId entityId) {
             const uint32_t index = EntityIndex(entityId);
-            if (index >= sparce.size() || sparce[index] == UINT32_MAX) return nullptr;
+            if (index >= sparce.size() || sparce[index] == INVALID_INDEX) return nullptr;
+            return &dense[sparce[index]];
+        }
+
+        const T* get(EntityId entityId) const {
+            const uint32_t index = EntityIndex(entityId);
+            if (index >= sparce.size() || sparce[index] == INVALID_INDEX) return nullptr;
             return &dense[sparce[index]];
         }
 

@@ -11,6 +11,7 @@ gcm.cache/
 
 .vscode/
 .idea/
+vsxmake*/
 
 *.o
 *.obj

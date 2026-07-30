@@ -16,7 +16,7 @@ export namespace EE {
         static Matrix4 translation(const Vector3& pos);
         static Matrix4 rotation(const Quaternion& q);
         static Matrix4 scaling(const Vector3& scale);
-        static Matrix4 perspective(float fov, float aspect, float near, float far);
+        static Matrix4 perspective(int fovDeg, float aspect, float near, float far);
         static Matrix4 orthographic(float left, float right, float bottom, float top, float near, float far);
         static Matrix4 lookAt(const Vector3& eye, const Vector3& target, const Vector3& up);
 

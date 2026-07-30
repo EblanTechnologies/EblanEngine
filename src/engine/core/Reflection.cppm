@@ -23,5 +23,25 @@ export namespace EE {
     };
 
     template<typename T>
-    const TypeInfo& getTypeInfo();
+    inline const TypeInfo& getTypeInfo() {
+        static TypeInfo info = {
+            .name = typeid(T).name(),
+            .size = sizeof(T),
+            .alignment = alignof(T),
+            .fields = {},
+            .create = []() -> void* {
+                if constexpr (std::is_default_constructible_v<T>) {
+                    return new T();
+                } else {
+                    return nullptr;
+                }
+            },
+            .destroy = [](void* p) {
+                if constexpr (std::is_destructible_v<T>) {
+                    delete static_cast<T*>(p);
+                }
+            }
+        };
+        return info;
+    }
 }

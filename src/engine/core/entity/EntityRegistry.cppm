@@ -6,9 +6,9 @@ module;
 #include <unordered_map>
 #include <vector>
 
-export module EE.EntityRegistry;
+export module EE.Core.EntityRegistry;
 
-import EE.Entity;
+import EE.Core.Entity;
 
 export namespace EE {
     class EntityRegistry {
@@ -78,18 +78,11 @@ export namespace EE {
         template<typename... Components>
         class View {
             EntityRegistry* m_registry;
-            ComponentArray<std::tuple_element_t<0, std::tuple<Components...>>>* m_smallest = nullptr;
+            ComponentArray<std::tuple_element_t<0, std::tuple<Components...>>>* m_first = nullptr;
 
         public:
             explicit View(EntityRegistry* registry) : m_registry(registry) {
-                size_t minSize = SIZE_MAX;
-                (..., [&] {
-                    auto* arr = m_registry->getArray<Components>();
-                    if (arr && arr->size() < minSize) {
-                        minSize = arr->size();
-                        m_smallest = arr;
-                    }
-                }());
+                m_first = m_registry->template getArray<std::tuple_element_t<0, std::tuple<Components...>>>();
             }
 
             struct Iterator {
@@ -106,8 +99,8 @@ export namespace EE {
                 }
             };
 
-            Iterator begin() { return {.arr = m_smallest, .index = 0, .registry = m_registry}; }
-            Iterator end() { return {.arr = m_smallest, .index = m_smallest ? m_smallest->size() : 0, .registry = m_registry}; }
+            Iterator begin() { return {.arr = m_first, .index = 0, .registry = m_registry}; }
+            Iterator end() { return {.arr = m_first, .index = m_first ? m_first->size() : 0, .registry = m_registry}; }
         };
 
         template<typename... Components>
@@ -125,7 +118,7 @@ export namespace EE {
             size_t key = typeid(T).hash_code();
             if (const auto it = m_components.find(key); it != m_components.end()) return *static_cast<ComponentArray<T>*>(it->second.get());
 
-            const auto arr = std::make_unique<ComponentArray<T>>();
+            auto arr = std::make_unique<ComponentArray<T>>();
             auto* ptr = arr.get();
             m_components.emplace(key, std::move(arr));
             return *ptr;
