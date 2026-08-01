@@ -1,0 +1,29 @@
+name: "tests"
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+          actions-cache-folder: '.xmake-cache'
+          actions-cache-key: 'windows-ci'
+
+      - name: Build
+        run: xmake build -v -y
+
+      - name: Run Tests
+        run: xmake run EblanEngineTests
+
