@@ -10,6 +10,7 @@ import EE.Render;
 import EE.Render.MeshRenderer;
 import EE.Render.RendererWorld;
 import EE.Math.Matrix;
+import EE.Core.Hierarchy;
 
 constexpr int W_WIDTH = 1280, W_HEIGHT = 720;
 
@@ -103,7 +104,18 @@ int main() {
     )";
 
     const EE::Render::ShaderHandle shader = device->createShader(vs, fs);
-    EE::Render::MaterialHandle material = device->createMaterial(shader);
+    const EE::Render::MaterialHandle material = device->createMaterial(shader);
+
+    const auto parent = registry.create();
+    registry.add<EE::Transform>(parent).setPosition({15, 0, -6});
+    registry.add<EE::MeshRenderer>(parent, cubeMesh, std::vector{ material });
+
+    const auto child = registry.create();
+    registry.add<EE::Transform>(child).setPosition({-5, 0, 0});
+    registry.add<EE::MeshRenderer>(child, cubeMesh, std::vector{ material });
+    registry.add<EE::Parent>(child, parent);
+
+    EE::HierarchySystem::onParentChanged(registry, child, EE::NULL_ENTITY, parent);
 
     std::vector<EE::EntityId> entities;
     for (int index = 0; index < 3; index++) {
@@ -151,6 +163,12 @@ int main() {
                     break;
             }
         }
+
+        auto* parentTransform = registry.get<EE::Transform>(parent);
+        parentTransform->setPosition(parentTransform->position.updateX(transformFactor * 2.0f));
+        parentTransform->setRotationEuler({angle, angle * 0.7f, angle * 0.3f});
+
+        EE::HierarchySystem::update(registry);
 
         renderWorld.extract(registry);
         device->beginFrame();

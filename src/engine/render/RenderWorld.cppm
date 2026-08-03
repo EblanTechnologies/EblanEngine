@@ -39,6 +39,7 @@ export namespace EE::Render {
 
             auto view = registry.view<Transform, MeshRenderer>();
             for (auto [entity, transform, meshRenderer] : view) {
+                if (!meshRenderer || !transform) continue;
                 if (!meshRenderer->enabled) continue;
 
                 const Matrix4& world = transform->getWorldMatrix();
@@ -56,6 +57,6 @@ export namespace EE::Render {
             }
         }
 
-        const RenderScene& getScene() const { return m_scene; }
+        [[nodiscard]] const RenderScene& getScene() const { return m_scene; }
     };
 }

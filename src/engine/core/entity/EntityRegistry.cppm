@@ -69,6 +69,12 @@ export namespace EE {
             return static_cast<const ComponentArray<T>*>(it->second.get())->get(id);
         }
 
+        template<typename T, typename... Args>
+        T& getOrAdd(EntityId id, Args&&... args) {
+            if (auto* ptr = get<T>(id)) return *ptr;
+            return add<T>(id, std::forward<Args>(args)...);
+        }
+
         template<typename T>
         [[nodiscard]] bool has(const EntityId id) const {
             const auto it = m_components.find(typeid(T).hash_code());
@@ -101,6 +107,9 @@ export namespace EE {
 
             Iterator begin() { return {.arr = m_first, .index = 0, .registry = m_registry}; }
             Iterator end() { return {.arr = m_first, .index = m_first ? m_first->size() : 0, .registry = m_registry}; }
+
+            Iterator begin() const { return {.arr = m_first, .index = 0, .registry = m_registry}; }
+            Iterator end() const { return {.arr = m_first, .index = m_first ? m_first->size() : 0, .registry = m_registry}; }
         };
 
         template<typename... Components>
