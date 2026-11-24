@@ -27,3 +27,39 @@ jobs:
       - name: Run Tests
         run: xmake run EblanEngineTests
 
+  build-linux:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+              clang-18 \
+              libgl1-mesa-dev \
+              libglu1-mesa-dev \
+              libxext-dev \
+              libx11-dev \
+              libxrandr-dev \
+              libxinerama-dev \
+              libxcursor-dev \
+              libxi-dev \
+              build-essential \
+              pkg-config
+
+      - name: Setup xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+          actions-cache-folder: '.xmake-cache'
+          actions-cache-key: 'linux-ci'
+
+      - name: Build
+        run: xmake build -y
+
+      - name: Run Tests
+        run: xmake run EblanEngineTests
+

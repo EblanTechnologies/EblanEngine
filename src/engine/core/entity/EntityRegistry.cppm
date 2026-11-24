@@ -1,5 +1,6 @@
 module;
 
+#include <atomic>
 #include <cassert>
 #include <cstdint>
 #include <memory>
@@ -11,6 +12,28 @@ export module EE.Core.EntityRegistry;
 import EE.Core.Entity;
 
 export namespace EE {
+    // Shared monotonic counter backing componentTypeKey<T>().
+    // A non-template inline function so the counter is ONE entity per program,
+    // shared by every componentTypeKey<T> instantiation.
+    inline std::size_t nextComponentTypeKey() {
+        static std::atomic<std::size_t> counter{1};
+        return counter.fetch_add(1, std::memory_order_relaxed);
+    }
+
+    // Program-stable key for a component type.
+    // Replacement for typeid(T).hash_code(): the EntityRegistry templates
+    // (add/get/has/view/...) are instantiated in *importing* translation units,
+    // and newer MSVC (error C2027) requires the complete std::type_info in every
+    // TU that instantiates a template whose body uses typeid. That would force
+    // every engine user to #include <typeinfo>. Static locals of an inline
+    // function template are a single entity per specialization across the whole
+    // program, so the key is stable everywhere without touching RTTI.
+    template<typename T>
+    [[nodiscard]] std::size_t componentTypeKey() {
+        static const std::size_t key = nextComponentTypeKey();
+        return key;
+    }
+
     class EntityRegistry {
         uint32_t m_nextIndex = 1;
         std::vector<uint32_t> m_generations;
@@ -52,19 +75,19 @@ export namespace EE {
 
         template<typename T>
         void remove(const EntityId id) {
-            if (const auto it = m_components.find(typeid(T).hash_code()); it != m_components.end()) it->second->remove(id);
+            if (const auto it = m_components.find(componentTypeKey<T>()); it != m_components.end()) it->second->remove(id);
         }
 
         template<typename T>
         T* get(EntityId id) {
-            const auto it = m_components.find(typeid(T).hash_code());
+            const auto it = m_components.find(componentTypeKey<T>());
             if (it == m_components.end()) return nullptr;
             return static_cast<ComponentArray<T>*>(it->second.get())->get(id);
         }
 
         template<typename T>
         const T* get(EntityId id) const {
-            const auto it = m_components.find(typeid(T).hash_code());
+            const auto it = m_components.find(componentTypeKey<T>());
             if (it == m_components.end()) return nullptr;
             return static_cast<const ComponentArray<T>*>(it->second.get())->get(id);
         }
@@ -77,7 +100,7 @@ export namespace EE {
 
         template<typename T>
         [[nodiscard]] bool has(const EntityId id) const {
-            const auto it = m_components.find(typeid(T).hash_code());
+            const auto it = m_components.find(componentTypeKey<T>());
             return it != m_components.end() && it->second->has(id);
         }
 
@@ -118,13 +141,13 @@ export namespace EE {
     private:
         template<typename T>
         ComponentArray<T>* getArray() {
-            const auto it = m_components.find(typeid(T).hash_code());
+            const auto it = m_components.find(componentTypeKey<T>());
             return it != m_components.end() ? static_cast<ComponentArray<T>*>(it->second.get()) : nullptr;
         }
 
         template<typename T>
         ComponentArray<T>& getOrCreateArray() {
-            size_t key = typeid(T).hash_code();
+            const size_t key = componentTypeKey<T>();
             if (const auto it = m_components.find(key); it != m_components.end()) return *static_cast<ComponentArray<T>*>(it->second.get());
 
             auto arr = std::make_unique<ComponentArray<T>>();

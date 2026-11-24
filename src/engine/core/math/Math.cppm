@@ -14,9 +14,11 @@
 // OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
 
-export module EE.Math;
+module;
 
-import std;
+#include <concepts>
+
+export module EE.Math;
 
 export namespace EEStd {
     constexpr float PI_F = 3.14159265359f;
@@ -33,7 +35,7 @@ export namespace EEStd {
     }
 
     template<typename T>
-    constexpr T clamp(T& value, T& min, T& max) {
+    constexpr T clamp(T value, T min, T max) {
         return value < min ? min : (value > max ? max : value);
     }
 

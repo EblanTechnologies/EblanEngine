@@ -16,12 +16,13 @@
 
 module;
 
-#include <cstddef>
+#include <cstdint>
+#include <vector>
+
 #include "../core/ReflectionMacro.hpp"
 
 export module EE.Render.MeshRenderer;
 
-import std;
 import EE.Render;
 import EE.Core.Reflection;
 

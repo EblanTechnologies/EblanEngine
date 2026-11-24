@@ -1,12 +1,12 @@
 module;
 
 #include <cstddef>
+#include <cmath>
 
 #include "../ReflectionMacro.hpp"
 
 export module EE.Math.Quaternion;
 
-import std;
 import EE.Math.Vector;
 import EE.Math.Angle;
 import EE.Core.Reflection;

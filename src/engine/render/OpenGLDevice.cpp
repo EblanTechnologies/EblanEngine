@@ -16,12 +16,15 @@
 
 module;
 
-#include <glad/glad.h>
+#include <cstdint>
+#include <cstdio>
+#include <memory>
+#include <vector>
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
 module EE.Render;
 
-import std;
 import EE.Math.Matrix;
 import EE.Math.Vector;
 
@@ -37,7 +40,7 @@ namespace EE::Render {
         if (!ok) {
             char log[1024];
             glGetShaderInfoLog(id, 1024, nullptr, log);
-            std::cerr << "Shader compilation error: " << log << '\n' << std::endl;
+            fprintf(stderr, "Shader compilation error: %s\n", log);
             glDeleteShader(id);
             return 0;
         }
@@ -54,7 +57,7 @@ namespace EE::Render {
         if (!ok) {
             char log[1024];
             glGetProgramInfoLog(id, 1024, nullptr, log);
-            std::cerr << "Program linking error: " << log << '\n' << std::endl;
+            fprintf(stderr, "Program linking error: %s\n", log);
             glDeleteProgram(id);
             return 0;
         }
@@ -78,7 +81,7 @@ namespace EE::Render {
 
     public:
         explicit OpenGLDevice(GLFWwindow* window) : m_window(window) {
-            gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+            gladLoadGL(reinterpret_cast<GLADloadfunc>(glfwGetProcAddress));
             glEnable(GL_DEPTH_TEST);
             glEnable(GL_CULL_FACE);
         }

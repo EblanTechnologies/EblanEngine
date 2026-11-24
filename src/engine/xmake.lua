@@ -6,7 +6,7 @@ target("EblanEngine")
 
     add_includedirs("../thirdparty", {public = true})
 
-    add_packages("glfw", "glad", "glm", "opengl")
+    add_packages("glfw", "glad", "opengl")
 
     set_languages("cxx20")
 

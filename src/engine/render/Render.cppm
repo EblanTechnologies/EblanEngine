@@ -16,14 +16,15 @@
 
 module;
 
-#include <cstddef>
+#include <cstdint>
+#include <memory>
+#include <vector>
 #include <GLFW/glfw3.h>
 
 #include "../core/ReflectionMacro.hpp"
 
 export module EE.Render;
 
-import std;
 import EE.Math.Vector;
 import EE.Math.Quaternion;
 import EE.Math.Matrix;

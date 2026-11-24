@@ -3,6 +3,9 @@
 #ifndef EBLANENGINE_REFLECTIONMACRO_HPP
 #define EBLANENGINE_REFLECTIONMACRO_HPP
 
+#include <cstddef>
+#include <typeinfo>
+
 #define REFLECT_COMPONENT(T, ...) \
     template<> const EE::TypeInfo& EE::getTypeInfo<T>() { \
         static EE::TypeInfo info = []{ \

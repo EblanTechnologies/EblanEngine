@@ -50,7 +50,7 @@ namespace EE {
         Quaternion q = qUn.normalized();
         Matrix4 result;
 
-        const float x2 = q.x + q.x, y2 = q.y + q.y, z2 = q.z + q.z, w2 = q.w;
+        const float x2 = q.x + q.x, y2 = q.y + q.y, z2 = q.z + q.z;
         const float xx = q.x * x2, xy = q.x * y2, xz = q.x * z2;
         const float yy = q.y * y2, yz = q.y * z2, zz = q.z * z2;
         const float wx = q.w * x2, wy = q.w * y2, wz = q.w * z2;
@@ -87,11 +87,11 @@ namespace EE {
         return result;
     }
 
-    Matrix4 Matrix4::perspective(const int fovDeg, const float aspect, const float near, const float far) {
+    Matrix4 Matrix4::perspective(const float fovYDeg, const float aspect, const float near, const float far) {
         Matrix4 result(0.0f);
 
-        const float fowRad = EEStd::deg2Rad(static_cast<float>(fovDeg));
-        const float tanHalfFov = std::tan(fowRad * 0.5f);
+        const float fovRad = EEStd::deg2Rad(fovYDeg);
+        const float tanHalfFov = std::tan(fovRad * 0.5f);
         const float zRange = near - far;
 
         result.m[0][0] = 1.0f / (aspect * tanHalfFov);
@@ -109,14 +109,14 @@ namespace EE {
 
         const float width = right - left;
         const float height = top - bottom;
-        const float depth = near - far;
+        const float depth = far - near;
 
         result.m[0][0] = 2.0f / width;
         result.m[1][1] = 2.0f / height;
         result.m[2][2] = -2.0f / depth;
-        result.m[3][0] = -(right + left) / width;
-        result.m[3][1] = -(top + bottom) / height;
-        result.m[3][2] = -(far + near) / depth;
+        result.m[0][3] = -(right + left) / width;
+        result.m[1][3] = -(top + bottom) / height;
+        result.m[2][3] = -(far + near) / depth;
         result.m[3][3] = 1.0f;
 
         return result;
@@ -124,7 +124,13 @@ namespace EE {
 
     Matrix4 Matrix4::lookAt(const Vector3 &eye, const Vector3 &target, const Vector3 &up) {
         const Vector3 forward = (target - eye).normalized();
-        const Vector3 right = forward.cross(up).normalized();
+
+        Vector3 referenceUp = up;
+        if (referenceUp.lengthSquared() < 1e-8f || std::abs(forward.dot(referenceUp.normalized())) > 0.999f) {
+            referenceUp = std::abs(forward.y) > 0.999f ? Vector3(0.0f, 0.0f, 1.0f) : Vector3(0.0f, 1.0f, 0.0f);
+        }
+
+        const Vector3 right = forward.cross(referenceUp).normalized();
         const Vector3 upLocal = right.cross(forward);
 
         Matrix4 result;
@@ -166,13 +172,25 @@ namespace EE {
         return result;
     }
 
-    Vector3 Matrix4::operator*(const Vector3& v) const {
+    Vector3 Matrix4::transformPoint(const Vector3& v) const {
         const float x = m[0][0] * v.x + m[0][1] * v.y + m[0][2] * v.z + m[0][3];
         const float y = m[1][0] * v.x + m[1][1] * v.y + m[1][2] * v.z + m[1][3];
         const float z = m[2][0] * v.x + m[2][1] * v.y + m[2][2] * v.z + m[2][3];
-        float w = m[3][0] * v.x + m[3][1] * v.y + m[3][2] * v.z + m[3][3];
-        if (w == 0.0f) w = 1.0f;
-        return {x/w, y/w, z/w};
+        const float w = m[3][0] * v.x + m[3][1] * v.y + m[3][2] * v.z + m[3][3];
+        if (w == 0.0f) return {x, y, z};
+        return {x / w, y / w, z / w};
+    }
+
+    Vector3 Matrix4::transformDirection(const Vector3& v) const {
+        return {
+            m[0][0] * v.x + m[0][1] * v.y + m[0][2] * v.z,
+            m[1][0] * v.x + m[1][1] * v.y + m[1][2] * v.z,
+            m[2][0] * v.x + m[2][1] * v.y + m[2][2] * v.z
+        };
+    }
+
+    Vector3 Matrix4::operator*(const Vector3& v) const {
+        return transformPoint(v);
     }
 
     Vector4 Matrix4::operator*(const Vector4 &v) const {

@@ -16,9 +16,11 @@
 
 module;
 
+#include <cstdint>
+#include <vector>
+
 export module EE.Render.RendererWorld;
 
-import std;
 import EE.Core.Entity;
 import EE.Core.EntityRegistry;
 import EE.Core.Transform;

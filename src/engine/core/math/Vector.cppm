@@ -6,12 +6,10 @@ module;
 #define OFFSET_OF(type, member) offsetof(type, member)
 #endif
 
-#include <cmath>
-#include "../ReflectionMacro.hpp"
-
-#ifdef _WIN32
 #include <algorithm>
-#endif
+#include <cmath>
+#include <cstddef>
+#include "../ReflectionMacro.hpp"
 
 export module EE.Math.Vector;
 
@@ -40,6 +38,7 @@ export namespace EE {
         bool operator!=(const Vector3& other) const { return !(*this == other); }
 
         Vector3& operator+=(const Vector3& other) { x+=other.x; y+=other.y; z+=other.z; return *this; }
+        Vector3& operator-=(const Vector3& other) { x-=other.x; y-=other.y; z-=other.z; return *this; }
         Vector3& operator*=(const float scalar) { x*=scalar; y*=scalar; z*=scalar; return *this; }
         Vector3& operator/=(const float scalar) { x/=scalar; y/=scalar; z/=scalar; return *this; }
 
@@ -114,6 +113,8 @@ export namespace EE {
         bool operator!=(const Vector2& other) const { return !(*this == other); }
 
         Vector2& operator+=(const Vector2& other) { x+=other.x; y+=other.y; return *this; }
+
+        Vector2& operator-=(const Vector2& other) { x-=other.x; y-=other.y; return *this; }
 
         Vector2& operator*=(const float scalar) { x*=scalar; y*=scalar; return *this; }
         Vector2& operator/=(const float scalar) { x/=scalar; y/=scalar; return *this; }

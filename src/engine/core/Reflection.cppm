@@ -1,11 +1,10 @@
 module;
 
 #include <cfloat>
-#include <vector>
-
-#ifdef __linux__
+#include <cstddef>
 #include <typeinfo>
-#endif
+#include <type_traits>
+#include <vector>
 
 export module EE.Core.Reflection;
 

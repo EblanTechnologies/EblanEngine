@@ -17,11 +17,12 @@
 module;
 
 #include <cstddef>
+#include <vector>
+
 #include "ReflectionMacro.hpp"
 
 export module EE.Core.Hierarchy;
 
-import std;
 import EE.Core.Entity;
 import EE.Core.EntityRegistry;
 import EE.Core.Reflection;

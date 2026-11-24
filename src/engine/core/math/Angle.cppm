@@ -1,8 +1,8 @@
 module;
 
-export module EE.Math.Angle;
+#include <numbers>
 
-import std;
+export module EE.Math.Angle;
 
 export namespace EE {
     struct Angle {
@@ -16,6 +16,11 @@ export namespace EE {
         [[nodiscard]]
         constexpr float degrees() const {
             return m_radians * 180.0f / std::numbers::pi_v<float>;
+        }
+
+        [[nodiscard]]
+        constexpr Angle operator-() const {
+            return Angle(-m_radians);
         }
 
         static constexpr Angle fromRadians(const float value) {

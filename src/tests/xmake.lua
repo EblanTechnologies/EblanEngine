@@ -8,7 +8,7 @@ target("EblanEngineTests")
     add_files("**.cpp")
     add_files("../engine/**.cppm", {rule = "c++.build_modules"})
 
-    add_packages("catch2", "glfw", "glad", "glm", "opengl")
+    add_packages("catch2", "glfw", "glad", "opengl")
 
     set_languages("cxx20")
 

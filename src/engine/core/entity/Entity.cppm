@@ -1,14 +1,13 @@
 module;
 
 #include <cassert>
-
-#ifdef __linux__
-#include <cstddef>
-#endif
+#include <cstdint>
+#include <limits>
+#include <utility>
+#include <vector>
 
 export module EE.Core.Entity;
 
-import std;
 import EE.Math.Vector;
 
 using std::uint64_t;

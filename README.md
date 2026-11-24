@@ -12,9 +12,9 @@ It's designed with an object-oriented approach and is currently in active develo
 ## Current Features
 
 - **Entity Component System (ECS)** — basic implementation with `EntityRegistry` and `EntityId`
-- **Math library** — `Transform`, `Matrix4`, `Vector`, `Quaternion`
+- **Math library** — `Transform`, `Matrix4`, `Vector`, `Quaternion`, `Camera`
 - **Rendering** — `WorldRender`, `MeshRenderer`, `OpenGLDevice`
-- **First scene** — can render a basic 3D scene
+- **First scene** — can render a basic 3D scene with a fly camera (WASD + mouse)
 
 ---
 
@@ -48,12 +48,13 @@ It's designed with an object-oriented approach and is currently in active develo
    Or download from: [xmake.io](https://xmake.io/)
 
 #### Linux
-Install required packages:
+
+The toolchain is pinned to **clang-18** for Linux (see `xmake.lua`), so install it first:
+
 ```bash
 sudo apt-get update
 sudo apt-get install -y \
-    curl \
-    clang-17 \
+    clang-18 \
     libgl1-mesa-dev \
     libglu1-mesa-dev \
     libxext-dev \
@@ -62,15 +63,13 @@ sudo apt-get install -y \
     libxinerama-dev \
     libxcursor-dev \
     libxi-dev \
-    libxfixes-dev \
-    libxrender-dev \
-    libxss-dev \
-    libxtst-dev \
     build-essential \
     pkg-config
 ```
 
-> Note: Package names may vary depending on your Linux distribution.
+> Note: Package names may vary depending on your Linux distribution.  
+> Note: The engine uses C++20 named modules but does **not** require `import std;`
+> or libc++, so any distro that ships clang-18 + libstdc++ will work.
 
 Install Xmake:
 ```bash
